@@ -1,21 +1,17 @@
-[%bs.raw {|require('./App.css')|}];
-
-[@bs.module] external logo : string = "./logo.svg";
-
 let component = ReasonReact.statelessComponent("App");
-
-let make = (~message, _children) => {
+let make = (_children) => {
   ...component,
-  render: _self =>
+  render: (_self) => {
+    /* dummy data */
+    let dummyRepo: RepoData.repo = {
+      stargazer_count: 20,
+      full_name: "jsdf/reason-react-hacker-news",
+      html_url: "https://github.com/jsdf/reason-react-hacker-news"
+    };
+
     <div className="App">
-      <div className="App-header">
-        <img src=logo className="App-logo" alt="logo" />
-        <h2> (ReasonReact.string(message)) </h2>
-      </div>
-      <p className="App-intro">
-        (ReasonReact.string("To get started, edit"))
-        <code> (ReasonReact.string(" src/App.re ")) </code>
-        (ReasonReact.string("and save to reload."))
-      </p>
-    </div>,
+      <h1>{ReasonReact.stringToElement("Reason Projects")}</h1>
+      <RepoItem repo=dummyRepo />
+    </div>
+  }
 };
