@@ -1,11 +1,12 @@
 let component = ReasonReact.statelessComponent("RepoItem");
+
 let make = (~repo: RepoData.repo, _children) => {
     ...component,
-    render: (_self) =>
+    render: (_self) => 
         <div className="RepoItem">
             <a href=repo.html_url>
-                <h2>{ReasonReact.stringToElement(repo.full_name)}</h2>
+                <h2>{ReasonReact.string(repo.full_name)}</h2>
             </a>
-            {ReasonReact.stringToElement(string_of_int(repo.stargazer_count) ++ " stars")}
+            {ReasonReact.string(string_of_int(repo.stargazer_count) ++ " stars")}
         </div>
 }
