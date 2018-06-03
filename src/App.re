@@ -1,15 +1,22 @@
-type state = {repoData: option(RepoData.repo)};
+type state = {repoData: option(array(RepoData.repo))};
 
 type action =
-  | Loaded(RepoData.repo)
+  | Loaded(array(RepoData.repo));
 
 let component = ReasonReact.reducerComponent("App");
 
-let dummyRepo: RepoData.repo = {
-  stargazer_count: 20,
-  full_name: "jsdf/reason-react-hacker-news",
-  html_url: "https://github.com/jsdf/reason-react-hacker-news"
-};
+let dummyRepos: array(RepoData.repo) = [|
+  {
+    stargazer_count: 999,
+    full_name: "reasonml/reason-tools",
+    html_url: "https://github.com/reasonml/reason-tools"
+  },
+  {
+    stargazer_count: 20,
+    full_name: "jsdf/reason-react-hacker-news",
+    html_url: "https://github.com/jsdf/reason-react-hacker-news"
+  }
+ |];
 
 let make = (_children) => {
   ...component,
@@ -28,12 +35,12 @@ let make = (_children) => {
   
   render: (self) => {
     let loadRepoButton =
-      <button onClick=(_event => self.send(Loaded(dummyRepo)))>
+      <button onClick=(_event => self.send(Loaded(dummyRepos)))>
         {ReasonReact.string("Load Repos")}
       </button>;
 
     let repoItem = switch self.state.repoData {
-    | Some(repo) => <RepoItem repo=repo />
+    | Some(repo) => ReasonReact.array(Array.map(r => <RepoItem repo=r />, repo))
     | None       => {loadRepoButton}
     };
 
