@@ -23,19 +23,19 @@ let make = (_children) => {
 
   reducer: (action, _state) => {
     switch action {
-    | Loaded(loadedRepo) => 
+    | Loaded(loadedRepo) =>
       ReasonReact.Update({
         repoData: Some(loadedRepo)
       })
     }
   },
-  
+
   render: (self) => {
     let repoItems = switch self.state.repoData {
     | None       => ReasonReact.string("Loading . . .")
-    | Some(repos) => ReasonReact.array(
-        Array.map(r => <RepoItem repo=r key=r.RepoData.key />, repos)
-      )
+    | Some(repos) => repos
+      |> Array.map(repo => <RepoItem repo key=repo.RepoData.key />)
+      |> ReasonReact.array
     };
 
     <div className="App">

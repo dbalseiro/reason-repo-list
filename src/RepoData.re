@@ -27,6 +27,5 @@ let fetchRepos = () => {
       |> then_((jsonText) => {
           resolve(parseReposResponseJson(Js.Json.parseExn(jsonText)));
         })
-        
   )
 };
