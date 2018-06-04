@@ -5,23 +5,20 @@ type action =
 
 let component = ReasonReact.reducerComponent("App");
 
-let dummyRepos: array(RepoData.repo) = [|
-  {
-    stargazer_count: 999,
-    full_name: "reasonml/reason-tools",
-    html_url: "https://github.com/reasonml/reason-tools"
-  },
-  {
-    stargazer_count: 20,
-    full_name: "jsdf/reason-react-hacker-news",
-    html_url: "https://github.com/jsdf/reason-react-hacker-news"
-  }
- |];
-
 let make = (_children) => {
   ...component,
+
   initialState: () => {
     repoData: None
+  },
+
+  didMount: (self) => {
+    RepoData.fetchRepos()
+      |> Js.Promise.then_(repoData => {
+          self.send(Loaded(repoData));
+          Js.Promise.resolve();
+        })
+      |> ignore;
   },
 
   reducer: (action, _state) => {
@@ -34,19 +31,16 @@ let make = (_children) => {
   },
   
   render: (self) => {
-    let loadRepoButton =
-      <button onClick=(_event => self.send(Loaded(dummyRepos)))>
-        {ReasonReact.string("Load Repos")}
-      </button>;
-
-    let repoItem = switch self.state.repoData {
-    | Some(repo) => ReasonReact.array(Array.map(r => <RepoItem repo=r />, repo))
-    | None       => {loadRepoButton}
+    let repoItems = switch self.state.repoData {
+    | None       => ReasonReact.string("Loading . . .")
+    | Some(repos) => ReasonReact.array(
+        Array.map(r => <RepoItem repo=r key=r.RepoData.key />, repos)
+      )
     };
 
     <div className="App">
       <h1>{ReasonReact.string("Reason Projects")}</h1>
-      {repoItem}
+      {repoItems}
     </div>
   }
 };
